@@ -14,16 +14,15 @@ const server = http.createServer(app);
 
 // Tạo máy chủ WebSocket
 const wss = new WebSocket.Server({ server });
-
+var str,tm,hm;
 wss.on('connection', (ws) => {
   console.log('Client connected');
-
   ws.on('message', (message) => {
-    console.log(`Received: ${message}`);
+    console.log(`Received: ${message}`);    
     // Trả lại tin nhắn cho tất cả các kết nối khác
     wss.clients.forEach((client) => {
       if (client !== ws && client.readyState === WebSocket.OPEN) {
-        client.send(message);
+        client.send(message+"");
       }
     });
   });

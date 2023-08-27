@@ -1,48 +1,38 @@
 // Server:
 var url = window.location.host; // hàm trả về url của trang hiện tại kèm theo port
 var ws = new WebSocket('ws://' + url + '/ws'); // mở 1 websocket với port 3000 
-function getReadings(){
-  var xhr = new XMLHttpRequest();
-  var temp =50.5;
-  var hum = 20.5;
-  gaugeTemp.value = temp;
-  gaugeHum.value = hum;
-}
-
 function GetButtonData(data) {
   switch (data)
   {
       case 2:
         var tx = "2"
         document.getElementById('myImage').src='/pic_bulbon.gif'
-        console.log('2');
+        console.log('bat den 1');
         ws.send(tx);
         break;
       case 3:
         var tx = "3"
         document.getElementById('myImage').src='/pic_bulboff.gif'
-        console.log('3');
+        console.log('tat den 1');
         ws.send(tx);
         break;
     case 4:
       var tx = "4"
       document.getElementById('myImage2').src='/pic_bulbon.gif'
-      console.log('4');
+      console.log('bat den 2');
       ws.send(tx);
       break;
       case 5:
       var tx = "5"
       document.getElementById('myImage2').src='/pic_bulboff.gif'
-      console.log('5');
+      console.log('tat den 2');
       ws.send(tx);
       break;
   }
 }
-// Get current sensor readings when the page loads  
+
 window.addEventListener('load', getReadings);
-// window.addEventListener('load', function () {
-//   ws.send('initial_request'); // Gửi yêu cầu ban đầu
-// });
+
 // Create Temperature Gauge
 var gaugeTemp = new LinearGauge({
   renderTo: 'gauge-temperature',
@@ -138,30 +128,14 @@ var gaugeHum = new RadialGauge({
   animationRule: "linear"
 }).draw();
 
-
-
-if (!!window.EventSource) {
-  var source = new EventSource('/events');
-  
-  source.addEventListener('open', function(e) {
-    console.log("Events Connected");
-  }, false);
-
-  source.addEventListener('error', function(e) {
-    if (e.target.readyState != EventSource.OPEN) {
-      console.log("Events Disconnected");
-    }
-  }, false);
-  
-  source.addEventListener('message', function(e) {
-    console.log("message", e.data);
-  }, false);
-  
-  source.addEventListener('new_readings', function(e) {
-    console.log("new_readings", e.data);
-    var myObj = JSON.parse(e.data);
-    console.log(myObj);
-    gaugeTemp.value = myObj.temperature;
-    gaugeHum.value = myObj.humidity;
-  }, false);
-}
+function getReadings(){
+  var nhiet,am;
+  ws.onmessage = function (message) {
+    var t = message.data;
+    const a = JSON.parse(t);
+    nhiet = a.temperature;
+    am = a.humidity;
+    gaugeTemp.value = nhiet;
+    gaugeHum.value = am;
+  } 
+} 
