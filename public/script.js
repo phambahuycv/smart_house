@@ -129,12 +129,15 @@ var gaugeHum = new RadialGauge({
 }).draw();
 
 function getReadings(){
-  var nhiet,am;
+  var nhiet,am,leda,ledb;
   ws.onmessage = function (message) {
     var t = message.data;
     const a = JSON.parse(t);
     nhiet = a.temperature;
     am = a.humidity;
+    leda = a.led1;
+    ledb = a.led2;
+    //console.log(leda + " " +ledb);
     gaugeTemp.value = nhiet;
     gaugeHum.value = am;
   } 
