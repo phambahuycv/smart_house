@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ESP IOT DASHBOARD</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="gauge.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+  </head>
+  <body>
+    <div class="topnav">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="database-interface.html">Database</a></li>
+      </ul>
+    </div>
+    <div>
+      <table class="table" id="dataTable">
+        <thead>
+          <th>Thời gian</th>
+          <th>Led 1</th>
+          <th>Led 2</th>
+          <th>Nhiệt độ</th>
+          <th>Độ ẩm</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2016</td>
+            <td>10</td>
+            <td>200</td>
+            <td>89</td>
+            <td>200</td>
+          </tr>
+          <tr class="active-row">
+            <td>2017</td>
+            <td>25</td>
+            <td>550</td>
+            <td>225</td>
+            <td>200</td>
+          </tr>
+          <tr>
+            <td>2018</td>
+            <td>55</td>
+            <td>1200</td>
+            <td>600</td>
+            <td>200</td>
+          </tr>
+          <tr class="active-row">
+            <td>2017</td>
+            <td>25</td>
+            <td>550</td>
+            <td>225</td>
+            <td>200</td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <div class="chart">
+       <canvas id="myChart"></canvas>
+      </div>
+    </div>
+    <script src="chart.js"></script>
+  </body>
+</html>
