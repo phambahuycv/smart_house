@@ -139,16 +139,16 @@ function getReadings(){
     leda = a.led1;
     ledb = a.led2;
     //console.log(leda + " " +ledb);
-    gaugeTemp.value = nhiet;
-    gaugeHum.value = am;
+    if(nhiet >1 && am >1 ) {
+      gaugeTemp.value = nhiet;
+      gaugeHum.value = am;
+    }
   } 
 } 
 
 
 
 //local :>
-
-// Server:
 // var url = window.location.host; // hàm trả về url của trang hiện tại kèm theo port
 // console.log(url);
 // var ws = new WebSocket('ws://' + url + '/ws'); // mở 1 websocket với port 3000 
@@ -289,7 +289,9 @@ function getReadings(){
 //     leda = a.led1;
 //     ledb = a.led2;
 //     //console.log(leda + " " +ledb);
-//     gaugeTemp.value = nhiet;
-//     gaugeHum.value = am;
+//     if(nhiet >1 && am >1 ) {
+//       gaugeTemp.value = nhiet;
+//       gaugeHum.value = am;
+//     }
 //   } 
 // } 
