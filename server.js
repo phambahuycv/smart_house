@@ -42,7 +42,42 @@ app.get('/get', (req, res) => {
           console.log('The data from database table are: \n', rows)
       })
   })
-})
+});
+
+// app.post('/insert', (req, res) => {
+
+//   pool.getConnection((err, connection) => {
+//       if(err) throw err
+      
+//       const params = req.body;
+//       connection.query('INSERT INTO dbiot SET ?', params, (err, rows) => {
+//       connection.release();
+//       if (!err) {
+//           res.send(`dbiot with the record ID  has been added.`);
+//       } else {
+//           console.log(err);
+//       }    
+//       console.log('The data from dbiot table are:11 \n', rows);
+//       })
+//   })
+// });
+
+app.get('/:date', (req, res) => {
+  pool.getConnection((err, connection) => {
+      const date = req.params.date;
+      if(err) throw err
+      connection.query('SELECT * FROM dbiot WHERE date LIKE ?',[date + '%'], (err, rows) => {
+          connection.release() // return the connection to pool
+          if (!err) {
+              res.send(rows)
+          } else {
+              console.log(err)
+          }
+          //console.log('aaaa: \n', rows)
+      })
+  })
+});
+
 app.get('/index', function(req, res) {
   res.render('index.html');
 });
