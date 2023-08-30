@@ -41,7 +41,7 @@ fetch('/get')
   .then((response) => response.json())
   .then((data) => {
     // Xử lý dữ liệu và trích xuất các giá trị cần thiết (date, led1, led2, temperature, humidity)
-    const labels = data.map((entry) => entry.date);
+    const labels = data.map((entry) => formatDateTime(entry.date));
     const led1Data = data.map((entry) => entry.led1);
     const led2Data = data.map((entry) => entry.led2);
     const temperatureData = data.map((entry) => entry.temperature);
@@ -97,11 +97,37 @@ function updateTable(data) {
     // Lặp qua mảng dữ liệu và thêm từng dòng vào bảng
     data.forEach(function(item) {
         var row = document.createElement("tr");
-        row.innerHTML = `<td>${item.date}</td>
-                         <td>${item.led1}</td>
-                         <td>${item.led2}</td>
+        row.innerHTML = `<td>${formatDateTime(item.date)}</td>
+                         <td>${item.led1 === '2' ? 'Bật' : 'Tắt'}</td>
+                         <td>${item.led2 === '4' ? 'Bật' : 'Tắt'}</td>
                          <td>${item.temperature}</td>
                          <td>${item.humidity}</td>`;
         tableBody.appendChild(row);
     });
+}
+/////////////////////////////////////////////////////////////////////////////////////////
+document.getElementById('search').addEventListener('click', function() {
+    const inputDate = document.getElementById('txt-search').value;
+  
+    // Chuyển đổi định dạng ngày tháng
+    const parts = inputDate.split('-');
+    const formattedDate = parts[0] + '-' + parts[1] + '-' + parts[2];
+    console.log(formattedDate);
+    // Gửi yêu cầu đến API
+    fetch(`/${formattedDate}`)
+      .then(response => response.json())
+      .then(data => {
+        // Xử lý dữ liệu trả về từ máy chủ
+        updateTable(data);
+        //console.log(data);
+      })
+      .catch(error => {
+        console.error('Đã xảy ra lỗi khi gửi yêu cầu:', error);
+      });
+  });
+  function formatDateTime(dateTimeStr) {
+    const dateTime = new Date(dateTimeStr);
+    const formattedDate = dateTime.toLocaleDateString('vi-VN', { year: 'numeric', month: '2-digit', day: '2-digit' });
+    const formattedTime = dateTime.toLocaleTimeString('vi-VN', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    return `${formattedDate} ${formattedTime}`;
 }
