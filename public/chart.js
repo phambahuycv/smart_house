@@ -1,3 +1,6 @@
+document.addEventListener('DOMContentLoaded', function () {
+    // Tất cả mã JavaScript của bạn ở đây
+      
 function BuildChart(labels, values, chartTitle) {
     var ctx = document.getElementById("myChart").getContext('2d');
     var myChart = new Chart(ctx, {
@@ -33,7 +36,26 @@ function BuildChart(labels, values, chartTitle) {
     });
     return myChart;
 }
-
+// Sử dụng Fetch API để lấy dữ liệu từ server
+fetch('/get')
+  .then((response) => response.json())
+  .then((data) => {
+    // Xử lý dữ liệu và trích xuất các giá trị cần thiết (date, led1, led2, temperature, humidity)
+    const labels = data.map((entry) => entry.date);
+    const led1Data = data.map((entry) => entry.led1);
+    const led2Data = data.map((entry) => entry.led2);
+    const temperatureData = data.map((entry) => entry.temperature);
+    const humidityData = data.map((entry) => entry.humidity);
+    updateTable(data);
+    // Sử dụng dữ liệu để vẽ biểu đồ bằng Chart.js
+    BuildChart(labels, temperatureData, "Nhiệt Độ");
+    BuildChart(labels, humidityData, "Độ Ẩm");
+    // console.log('aaa');
+    
+  })
+  .catch((error) => {
+    //console.error('Lỗi khi lấy dữ liệu từ server:', error);
+  });
 
 // HTML To JSON Script 
 // *Forked* from https://johndyer.name/html-table-to-json/
@@ -52,15 +74,34 @@ for (var i = 1; i < table.rows.length; i++) {
     }
     json.push(rowData);
 }
-console.log(json);
+// console.log(json);
 // Map json values back to label array
 var labels = json.map(function (e) {
     return e.year;
 });
-console.log(labels);
+// console.log(labels);
 // Map json values back to values array
 var values = json.map(function (e) {
     return e.itemssold;
 });
-console.log(values);
+// console.log(values);
 var chart = BuildChart(labels, values, "Temperature and Humidity over time");
+});
+
+function updateTable(data) {
+    var tableBody = document.querySelector("#dataTable tbody");
+
+    // Xóa tất cả các hàng hiện tại trong bảng
+    tableBody.innerHTML = "";
+
+    // Lặp qua mảng dữ liệu và thêm từng dòng vào bảng
+    data.forEach(function(item) {
+        var row = document.createElement("tr");
+        row.innerHTML = `<td>${item.date}</td>
+                         <td>${item.led1}</td>
+                         <td>${item.led2}</td>
+                         <td>${item.temperature}</td>
+                         <td>${item.humidity}</td>`;
+        tableBody.appendChild(row);
+    });
+}

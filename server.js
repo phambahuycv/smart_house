@@ -3,12 +3,50 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const express = require('express'); // Thêm Express.js
-
+const bodyParser = require('body-parser');
+const mysql = require('mysql');
 const app = express(); // Khởi tạo Express.js
 
 // Phục vụ các tệp tĩnh từ thư mục public
 app.use(express.static(path.join(__dirname, 'public')));
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+
+// parse application/json
+app.use(bodyParser.json())
+
+// MySQL
+const pool  = mysql.createPool({
+    connectionLimit : 10,
+    host            : 'localhost',
+    user            : 'root',
+    password        : '',
+    database        : 'n10i'
+})
+app.get('/get', (req, res) => {
+  pool.getConnection((err, connection) => {
+      if(err) throw err
+      console.log('connected as id ' + connection.threadId)
+      connection.query('SELECT date, led1, led2, temperature, humidity FROM dbiot', (err, rows) => {
+          connection.release() // return the connection to pool
+
+          if (!err) {
+              res.send(rows)
+          } else {
+              console.log(err)
+          }
+
+          // if(err) throw err
+          console.log('The data from database table are: \n', rows)
+      })
+  })
+})
+app.get('/index', function(req, res) {
+  res.render('index.html');
+});
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 // Tạo máy chủ HTTP để phục vụ trang web và kết nối WebSocket
 const server = http.createServer(app);
 
