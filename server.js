@@ -44,23 +44,24 @@ app.get('/get', (req, res) => {
   })
 });
 
-// app.post('/insert', (req, res) => {
+app.post('/insert', (req, res) => {
 
-//   pool.getConnection((err, connection) => {
-//       if(err) throw err
+  pool.getConnection((err, connection) => {
+      if(err) throw err
       
-//       const params = req.body;
-//       connection.query('INSERT INTO dbiot SET ?', params, (err, rows) => {
-//       connection.release();
-//       if (!err) {
-//           res.send(`dbiot with the record ID  has been added.`);
-//       } else {
-//           console.log(err);
-//       }    
-//       console.log('The data from dbiot table are:11 \n', rows);
-//       })
-//   })
-// });
+      const params = req.body;
+      connection.query('INSERT INTO dbiot SET ?', params, (err, rows) => {
+      connection.release();
+      if (!err) {
+          // res.json(params);
+          res.send('oke');
+      } else {
+          console.log(err);
+      }    
+      //console.log('The data from dbiot table are:11 \n', rows);
+      })
+  })
+});
 
 app.get('/:date', (req, res) => {
   pool.getConnection((err, connection) => {
