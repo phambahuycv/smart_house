@@ -1,6 +1,6 @@
 // Server:
 var url = window.location.host; // hàm trả về url của trang hiện tại kèm theo port
-console.log(url);
+
 var wss = new WebSocket('wss://' + url + '/ws'); // mở 1 websocket với port 3000 
 function GetButtonData(data) {
   switch (data)
@@ -128,9 +128,9 @@ var gaugeHum = new RadialGauge({
   animationDuration: 1500,
   animationRule: "linear"
 }).draw();
-
+var nhiet,am,leda,ledb;
 function getReadings(){
-  var nhiet,am,leda,ledb;
+
   wss.onmessage = function (message) {
     var t = message.data;
     const a = JSON.parse(t);
@@ -145,6 +145,62 @@ function getReadings(){
     }
   } 
 } 
+function getCurrentDateTime() {
+  const now = new Date();
+
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+  const day = String(now.getDate()).padStart(2, '0');
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+
+  const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+  return formattedDateTime;
+}
+
+// Sử dụng sự kiện click để gọi hàm saveData khi nút "Lưu" được nhấn
+document.getElementById('save-button').addEventListener('click', function () {
+  saveData();
+});
+var dataToSave;
+// Lấy thời gian hiện tại
+function saveData() {
+  // Lấy thời gian hiện tại
+  const currentDateTime = getCurrentDateTime();
+
+  // Lấy trạng thái của đèn hiện tại
+  const led1Status = leda; // Thay thế bằng trạng thái thực tế của đèn 1
+  const led2Status = ledb; // Thay thế bằng trạng thái thực tế của đèn 2
+
+  // Lấy nhiệt độ và độ ẩm
+  const temperature = gaugeTemp.value;
+  const humidity = gaugeHum.value;
+
+  // Tạo một đối tượng JSON từ thông tin thu thập được
+  dataToSave = {
+    date: currentDateTime,
+    led1: led1Status,
+    led2: led2Status,
+    temperature: temperature,
+    humidity: humidity
+  };
+  console.log(dataToSave);
+  fetch('/insert', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(dataToSave)
+  })
+    .then(data => {
+    })
+    .catch(error => {
+      console.error('Error saving data:', error);
+      // Xử lý lỗi nếu có
+    });
+}
 
 
 
